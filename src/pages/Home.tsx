@@ -1,13 +1,49 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Shield, Users, Mic, BookOpen, MessageCircle, Gamepad2, ArrowRight } from "lucide-react";
+import { Heart, Shield, Users, Mic, BookOpen, MessageCircle, Gamepad2, ArrowRight, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import headerImage from "@/assets/herstory-header.jpg";
 
 const Home = () => {
+  const { toast } = useToast();
+  const [suggestion, setSuggestion] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleSuggestionSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "¡Mensaje enviado!",
+      description: "Gracias por tu sugerencia. Te contactaremos pronto.",
+    });
+    setSuggestion("");
+    setName("");
+    setEmail("");
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Header with Image */}
+      <div className="relative w-full h-64 overflow-hidden">
+        <img 
+          src={headerImage} 
+          alt="HerStory Header" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div className="text-center text-white">
+            <h1 className="text-4xl md:text-6xl font-bold mb-2">HerStory</h1>
+            <p className="text-lg md:text-xl italic">"Voces que la historia olvidó"</p>
+          </div>
+        </div>
+      </div>
+      
       <Navbar />
       
       {/* Hero Section */}
@@ -230,6 +266,39 @@ const Home = () => {
       {/* Footer */}
       <footer className="border-t bg-background py-12">
         <div className="container">
+          {/* Suggestion Form */}
+          <div className="mb-12 max-w-2xl mx-auto">
+            <h3 className="text-2xl font-bold text-center mb-6">Envíanos tus sugerencias</h3>
+            <form onSubmit={handleSuggestionSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  placeholder="Tu nombre"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <Input
+                  type="email"
+                  placeholder="Tu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <Textarea
+                placeholder="Comparte tu sugerencia, opinión o mensaje..."
+                value={suggestion}
+                onChange={(e) => setSuggestion(e.target.value)}
+                required
+                className="min-h-32"
+              />
+              <Button type="submit" className="w-full">
+                <Send className="mr-2 h-4 w-4" />
+                Enviar mensaje
+              </Button>
+            </form>
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <h3 className="font-semibold mb-3">Plataforma</h3>
@@ -264,7 +333,7 @@ const Home = () => {
             </div>
           </div>
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Voz Activada. Todos los derechos reservados.</p>
+            <p>&copy; 2024 HerStory. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
