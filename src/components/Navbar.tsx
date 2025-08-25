@@ -13,10 +13,19 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, User, Heart, Mic, Search, BookOpen, Users, MessageCircle, Gamepad2, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {useAuth} from "@/hooks/useAuth"; 
+import {supabase} from "@/lib/supabaseClient"; 
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+
+  const {user, loading} =useAuth(); 
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -159,12 +168,37 @@ const Navbar = () => {
         {/* Right Side - Login Button */}
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
+
+           {/* Botón de sesión */}
+        {!loading && (
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <Link to="/perfil">
+                  <Button variant="hero" size="sm" className="hidden md:inline-flex">
+                    <User className="mr-2 h-4 w-4" />
+                    Mi Perfil
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="hidden md:inline-flex"
+                >
+                  Cerrar Sesión
+                </Button>
+              </>
+            ) : (
           <Link to="/login">
             <Button variant="hero" size="sm" className="hidden md:inline-flex">
               <User className="mr-2 h-4 w-4" />
               Iniciar Sesión
             </Button>
           </Link>
+            )}
+            </div>
+          )}
 
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -220,12 +254,35 @@ const Navbar = () => {
                 ))}
                 
                 <div className="pt-4">
+                  {!loading && (
+                    user ? (
+                      <div className="flex flex-col space-y-3">
+                        <Link to="/perfil" onClick={() => setIsOpen(false)}>
+                          <Button variant="hero" className="w-full">
+                            <User className="mr-2 h-4 w-4" />
+                            Mi Perfil
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => {
+                            handleLogout();
+                            setIsOpen(false);
+                          }}
+                        >
+                          Cerrar Sesión
+                        </Button>
+                      </div>
+                    ) : (
                   <Link to="/login" onClick={() => setIsOpen(false)}>
                     <Button variant="hero" className="w-full">
                       <User className="mr-2 h-4 w-4" />
                       Iniciar Sesión
                     </Button>
                   </Link>
+                    )
+                  )}
                 </div>
               </nav>
             </SheetContent>

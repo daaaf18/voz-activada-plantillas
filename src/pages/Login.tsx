@@ -7,15 +7,25 @@ import { Separator } from "@/components/ui/separator";
 import { Mail, Lock, Github } from "lucide-react";
 import { Link } from "react-router-dom";
 
+{/*Importar cliente de supabase  */}
+import {supabase} from '../lib/supabaseClient'
+
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Aquí se integrará con Supabase
-    console.log("Login/Register:", { email, password });
+    try {
+      const result= await supabase.auth.signInWithOtp({
+      email:email,
+    }); 
+    console.log(result);
+    } catch (error) {
+      console.error(error); 
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -88,7 +98,7 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Email/Password Form */}
+            {/* Email/Password Form  (inicio de sesion con tokens) */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Correo electrónico</Label>
@@ -105,7 +115,7 @@ const Login = () => {
                   />
                 </div>
               </div>
-
+{/*
               <div className="space-y-2">
                 <Label htmlFor="password">Contraseña</Label>
                 <div className="relative">
@@ -132,6 +142,8 @@ const Login = () => {
                   </button>
                 </div>
               )}
+                */}
+                
 
               <Button type="submit" variant="hero" className="w-full">
                 {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
