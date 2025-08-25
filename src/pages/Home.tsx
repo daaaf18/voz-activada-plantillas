@@ -91,35 +91,36 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Sabías que Section */}
-      <section className="py-16 bg-background">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              ¿<span className="bg-gradient-hero bg-clip-text text-transparent">Sabías que</span>...?
-            </h2>
-            <Card className="max-w-4xl mx-auto bg-gradient-subtle border-primary/20">
-              <CardContent className="p-8">
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  Solo el <strong className="text-primary">7%</strong> de las estatuas públicas en el mundo representan mujeres, 
-                  y menos del <strong className="text-primary">3%</strong> de los libros de historia tradicionales 
-                  dedican capítulos completos a figuras femeninas que no sean reinas o esposas de líderes.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="text-center">
-            <Button size="lg" className="mb-8">
-              <BookOpen className="mr-2 h-5 w-5" />
-              Explorar Galería de Mujeres Históricas
-            </Button>
-            <p className="text-sm text-muted-foreground">
-              Descubre las historias extraordinarias que el tiempo intentó borrar
-            </p>
-          </div>
-        </div>
-      </section>
+{/* Sabías que Section */}
+<section className="py-16 bg-background">
+  <div className="container">
+    <div className="text-center mb-12">
+      <h2 className="text-3xl md:text-4xl font-bold mb-6">
+        ¿<span className="bg-gradient-hero bg-clip-text text-transparent">Sabías que</span>...?
+      </h2>
+      <Card className="max-w-4xl mx-auto bg-gradient-subtle border-primary/20">
+        <CardContent className="p-8">
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            Solo el <strong className="text-primary">7%</strong> de las estatuas públicas en el mundo representan mujeres, 
+            y menos del <strong className="text-primary">3%</strong> de los libros de historia tradicionales 
+            dedican capítulos completos a figuras femeninas que no sean reinas o esposas de líderes.
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+    
+    <div className="text-center">
+      <Button size="lg" className="mb-8">
+        <BookOpen className="mr-2 h-5 w-5" />
+        Explorar Galería de Mujeres Históricas
+      </Button>
+      <p className="text-sm text-muted-foreground">
+        Descubre las historias extraordinarias que el tiempo intentó borrar
+      </p>
+    </div>
+  </div>
+</section>
+
 
       {/* Features Section */}
       <section className="py-20 bg-background">

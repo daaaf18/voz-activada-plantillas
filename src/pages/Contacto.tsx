@@ -78,7 +78,7 @@ const Contacto = () => {
                   </div>
                   <div>
                     <p className="font-medium">Email</p>
-                    <p className="text-sm text-muted-foreground">hola@herstory.com</p>
+                    <p className="text-sm text-muted-foreground">herstoryy2025@gmail.com</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -95,8 +95,8 @@ const Contacto = () => {
                     <MapPin className="h-5 w-5 text-accent" />
                   </div>
                   <div>
-                    <p className="font-medium">Oficina</p>
-                    <p className="text-sm text-muted-foreground">Ciudad de México, México</p>
+                    <p className="font-medium">Ciudad</p>
+                    <p className="text-sm text-muted-foreground">Puebla, Puebla</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">

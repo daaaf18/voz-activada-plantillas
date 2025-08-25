@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +21,6 @@ const EllaDice = () => {
       id: 1,
       title: "Mi experiencia en el ámbito laboral",
       content: "Quiero compartir mi historia sobre cómo superé la discriminación en mi trabajo...",
-      author: "Ana M.",
       replies: 12,
       likes: 28,
       category: "Trabajo",
@@ -31,7 +30,6 @@ const EllaDice = () => {
       id: 2,
       title: "Recursos para mujeres emprendedoras",
       content: "He recopilado una lista de organizaciones que apoyan a mujeres empresarias...",
-      author: "Carmen L.",
       replies: 8,
       likes: 35,
       category: "Emprendimiento",
@@ -41,7 +39,6 @@ const EllaDice = () => {
       id: 3,
       title: "Apoyo emocional tras una ruptura difícil",
       content: "Busco consejos y apoyo de la comunidad. Pasé por una situación muy complicada...",
-      author: "María S.",
       replies: 24,
       likes: 45,
       category: "Bienestar",
@@ -51,11 +48,11 @@ const EllaDice = () => {
 
   const categories = ["Todos", "Trabajo", "Emprendimiento", "Bienestar", "Familia", "Educación"];
 
-  const handleNewPost = (e: React.FormEvent) => {
+  const handleNewPost = (e) => {
     e.preventDefault();
     toast({
       title: "¡Post publicado!",
-      description: "Tu mensaje ha sido compartido con la comunidad.",
+      description: "Tu mensaje ha sido compartido de manera anónima con la comunidad.",
     });
     setNewPost("");
     setNewPostTitle("");
@@ -126,7 +123,7 @@ const EllaDice = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Plus className="h-5 w-5" />
-                  Nuevo Post
+                  Nuevo Post (Anónimo)
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -145,7 +142,7 @@ const EllaDice = () => {
                     className="min-h-24"
                   />
                   <Button type="submit" className="w-full">
-                    Publicar
+                    Publicar Anónimo
                   </Button>
                 </form>
               </CardContent>
@@ -199,11 +196,11 @@ const EllaDice = () => {
                       <div className="flex items-center space-x-3">
                         <Avatar>
                           <AvatarFallback className="bg-primary/10 text-primary">
-                            {post.author.charAt(0)}
+                            A
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold">{post.author}</p>
+                          <p className="font-semibold">Anónim@</p>
                           <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
                         </div>
                       </div>
