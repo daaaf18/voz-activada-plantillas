@@ -6,19 +6,22 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+//import Chatbot from "./components/ui/chatbot";
+import ChatbotSimulado from "./components/ui/chatbot_simulado";
 
-const queryClient = new QueryClient();
+
+const queryClient = new QueryClient(); // ← Definir aquí
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <ChatbotSimulado /> {/* Burbuja flotante */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
