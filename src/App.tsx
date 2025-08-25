@@ -12,6 +12,9 @@ import Contacto from "./pages/Contacto";
 import Nosotras from "./pages/Nosotras";
 import NotFound from "./pages/NotFound";
 import Perfil from "./pages/perfil";
+//import Chatbot from "./components/ui/chatbot";
+import ChatbotSimulado from "./components/ui/chatbot_simulado";
+
 
 const queryClient = new QueryClient();
 
@@ -21,6 +24,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <ChatbotSimulado /> {/* Burbuja flotante */}
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
