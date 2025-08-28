@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Lock, Github } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 
 {/*Importar cliente de supabase  */}
@@ -14,6 +15,8 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [open, setOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,8 +26,15 @@ const Login = () => {
       email:email,
     }); 
     console.log(result);
+
+        if (!result.error) {
+       setOpen(true);
+      setMensaje("❌ Ocurrió un error, intenta nuevamente");
+    }
+
     } catch (error) {
       console.error(error); 
+      setMensaje("⚠️ Algo salió mal");
     }
   };
 
@@ -148,6 +158,23 @@ const Login = () => {
               <Button type="submit" variant="hero" className="w-full">
                 {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
               </Button>
+
+              {/* Modal emergente */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>📧 Revisa tu correo</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Hemos enviado un enlace a tu bandeja de entrada para que completes el inicio de sesión.
+          </p>
+          <Button onClick={() => setOpen(false)} className="mt-4 w-full">
+            Entendido
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+
             </form>
 
             <div className="text-center text-sm">
@@ -161,6 +188,8 @@ const Login = () => {
               >
                 {isLogin ? "Regístrate aquí" : "Inicia sesión"}
               </button>
+              
+
             </div>
 
             <div className="text-center">
