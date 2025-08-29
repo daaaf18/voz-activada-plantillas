@@ -11,12 +11,22 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, User, Heart, Mic, Search, BookOpen, Users, MessageCircle, Gamepad2, Phone } from "lucide-react";
+import { Menu, User, Heart, Mic, Search, BookOpen, Users, MessageCircle, Gamepad2, Phone, LogOut} from "lucide-react";
 import { cn } from "@/lib/utils";
+import {useAuth} from "@/hooks/useAuth"; 
+import {supabase} from "@/lib/supabaseClient"; 
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+
+  const {user, loading} =useAuth(); 
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -31,7 +41,7 @@ const Navbar = () => {
       label: "Voces Silenciadas", 
       href: "/voces-silenciadas", 
       icon: Mic,
-      description: "Historias y testimonios"
+      description: "Podcasts y contenido multimedia"
     },
     {
       label: "Nos Faltan Ellas",
@@ -49,7 +59,7 @@ const Navbar = () => {
       label: "HerStory", 
       href: "/herstory", 
       icon: BookOpen,
-      description: "Podcasts y contenido multimedia"
+      description: "Mural de mujeres"
     },
     { 
       label: "Ella Dice", 
@@ -102,15 +112,17 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center">
-        {/* Logo */}
-        <div className="mr-6 flex items-center space-x-2">
+       <div className="container flex h-16 items-center">
+         {/* Logo */}
+         <div className="mr-6 flex items-center space-x-2"> 
           <Link to="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-hero">
-              <Heart className="h-5 w-5 text-white" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg">
+              <a href="/img/logo/logo_story.png">
+                <img src="/img/logo/logo_story.png" alt="HerStory Logo" className="h-8 w-8" />
+              </a>
             </div>
             <span className="hidden font-bold sm:inline-block bg-gradient-hero bg-clip-text text-transparent">
-              Voz Activada
+              HerStory
             </span>
           </Link>
         </div>
@@ -157,12 +169,46 @@ const Navbar = () => {
         {/* Right Side - Login Button */}
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
+
+           {/* Botón de sesión */}
+        {!loading && (
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+              
+                <Link to="/perfil">
+                  <Button variant="hero" size="sm" className="hidden md:inline-flex">
+                    <User className="mr-2 h-4 w-4" />
+                    Mi Perfil
+                  </Button>
+                </Link>
+               <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleLogout}
+                    className="hidden md:inline-flex"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Cerrar Sesión</p>
+                </TooltipContent>
+              </Tooltip>
+            
+              </>
+            ) : (
           <Link to="/login">
             <Button variant="hero" size="sm" className="hidden md:inline-flex">
               <User className="mr-2 h-4 w-4" />
               Iniciar Sesión
             </Button>
           </Link>
+            )}
+            </div>
+          )}
 
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -218,12 +264,35 @@ const Navbar = () => {
                 ))}
                 
                 <div className="pt-4">
+                  {!loading && (
+                    user ? (
+                      <div className="flex flex-col space-y-3">
+                        <Link to="/perfil" onClick={() => setIsOpen(false)}>
+                          <Button variant="hero" className="w-full">
+                            <User className="mr-2 h-4 w-4" />
+                            Mi Perfil
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => {
+                            handleLogout();
+                            setIsOpen(false);
+                          }}
+                        >
+                          Cerrar Sesión
+                        </Button>
+                      </div>
+                    ) : (
                   <Link to="/login" onClick={() => setIsOpen(false)}>
                     <Button variant="hero" className="w-full">
                       <User className="mr-2 h-4 w-4" />
                       Iniciar Sesión
                     </Button>
                   </Link>
+                    )
+                  )}
                 </div>
               </nav>
             </SheetContent>

@@ -13,7 +13,12 @@ import Nosotras from "./pages/Nosotras";
 import NotFound from "./pages/NotFound";
 import Aprende from "./pages/Aprende";
 import Ayuda from './pages/Ayuda';
-
+import Perfil from "./pages/perfil";
+//import Chatbot from "./components/ui/chatbot";
+import ChatbotSimulado from "./components/ui/chatbot_simulado";
+import WomanDetail from "./pages/WomanDetail";
+import HerStory from "./pages/HerStory";
+import VocesSilenciadas from "./pages/VocesSilenciadas";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -22,16 +27,22 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <ChatbotSimulado /> {/* Burbuja flotante */}
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/perfil" element={<Perfil />}/>
             <Route path="/mujeres-desaparecidas" element={<MujeresDesaparecidas />} />
-            <Route path="/ayuda" element={<Ayuda />} />
             <Route path="/ella-dice" element={<EllaDice />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/nosotras" element={<Nosotras />} />
+            <Route path="/ayuda" element={<Ayuda />} />
             <Route path="/aprende" element={<Aprende />} />
+            <Route path="/mujer/:id" element={<WomanDetail />} />
+            <Route path="/herstory" element={<HerStory />} />
+            <Route path="/voces-silenciadas" element={<VocesSilenciadas />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

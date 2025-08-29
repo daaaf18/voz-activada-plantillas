@@ -1,7 +1,9 @@
-import HeroBanner from "@/components/HeroBanner";
+  import HeroBanner from "@/components/HeroBanner";
 import CategorySection from "@/components/CategorySection";
 
-const Index = () => {
+const HerStory = () => {
+
+
   const categories = [
     {
       id: "voces-creadoras",
@@ -48,6 +50,7 @@ const Index = () => {
   ];
 
   return (
+    
     <div className="min-h-screen">
       {/* Hero Banner */}
       <HeroBanner />
@@ -78,4 +81,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default HerStory;
