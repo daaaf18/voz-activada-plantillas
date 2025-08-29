@@ -16,7 +16,7 @@ import Perfil from "./pages/perfil";
 import ChatbotSimulado from "./components/ui/chatbot_simulado";
 import WomanDetail from "./pages/WomanDetail";
 import HerStory from "./pages/HerStory";
-
+import VocesSilenciadas from "./pages/VocesSilenciadas";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -37,6 +37,7 @@ const App = () => (
             <Route path="/nosotras" element={<Nosotras />} />
             <Route path="/mujer/:id" element={<WomanDetail />} />
             <Route path="/herstory" element={<HerStory />} />
+            <Route path="/voces-silenciadas" element={<VocesSilenciadas />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

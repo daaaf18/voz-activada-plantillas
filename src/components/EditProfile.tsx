@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import {supabase} from '../lib/supabaseClient'
+import { supabase } from "../lib/supabaseClient";
 
 interface EditProfileProps {
   userId: string; 
@@ -22,22 +22,17 @@ export const EditProfile = ({ userId, onSave, onCancel }: EditProfileProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  /*
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setFormData(prev => ({ ...prev, profileImage: result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  */ 
+  // Función para generar iniciales
+  const getInitials = (name: string) => name.split(" ").map(n => n[0]).join("").toUpperCase();
 
+  // Cargar datos de perfil
   useEffect(() => {
-    // Cargar datos de Supabase
+    if (!supabase) {
+      console.log("Supabase no disponible, cargando datos simulados");
+      setFormData({ name: `Usuario ${userId.slice(0, 5)}`, profileImage: "" });
+      return;
+    }
+
     const fetchProfile = async () => {
       const { data, error } = await supabase
         .from("profile")
@@ -46,84 +41,62 @@ export const EditProfile = ({ userId, onSave, onCancel }: EditProfileProps) => {
         .single();
 
       if (!error && data) {
-        setFormData({ name: data.full_name || `Usuario ${userId.slice(0, 5)}`, profileImage: data.avatar_url || "" });
+        setFormData({
+          name: data.full_name || `Usuario ${userId.slice(0, 5)}`,
+          profileImage: data.avatar_url || "",
+        });
       }
     };
+
     fetchProfile();
   }, [userId]);
 
-
-  /*
+  // Manejar subida de imagen
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
-
-  //subir a supabase storage
- const { data, error } = await supabase.storage
-      .from("avatars")
-      .upload(`${userId}/${file.name}`, file, { upsert: true });
-
-    if (!error) {
-      const url = supabase.storage.from("avatars").getPublicUrl(`${userId}/${file.name}`).data.publicUrl;
-      setFormData(prev => ({ ...prev, profileImage: url }));
+    if (!supabase) {
+      console.log("Supabase no disponible, imagen no se subirá");
+      return;
     }
+
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) return;
+
+    const fileExt = file.name.split(".").pop();
+    const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+
+    const { error } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, { cacheControl: "3600", upsert: true });
+    if (error) return;
+
+    const { data: publicUrlData } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(filePath);
+
+    setFormData(prev => ({ ...prev, profileImage: publicUrlData.publicUrl }));
+
+    await supabase
+      .from("profile")
+      .update({ avatar_url: publicUrlData.publicUrl })
+      .eq("id", user.id);
   };
-*/ 
 
-const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
-  const {
-    data: { user },
-    error: userError
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    console.error("Usuario no autenticado");
-    return;
-  }
-
-  const fileExt = file.name.split(".").pop();
-  const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
-
-  const { data, error } = await supabase.storage
-    .from("avatars")
-    .upload(filePath, file, {
-      cacheControl: "3600",
-      upsert: true,
-    });
-
-  if (error) {
-    console.error("Error al subir la imagen:", error.message);
-    return;
-  }
-
-  // Obtener URL pública
-  const { data: publicUrlData } = supabase.storage
-    .from("avatars")
-    .getPublicUrl(filePath);
-
-  console.log("URL pública:", publicUrlData.publicUrl);
-
-  //actualiza estado para reflejar imagen en el frontend
-  setFormData((prev) => ({ ...prev, profileImage: publicUrlData.publicUrl }));
-
-  // Actualizar perfil con la nueva URL
-  await supabase
-    .from("profile")
-    .update({ avatar_url: publicUrlData.publicUrl })
-    .eq("id", user.id);
-};
-
-
-const handleSubmit = async (e: React.FormEvent) => {
+  // Guardar cambios
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!supabase) {
+      console.log("Supabase no disponible, cambios simulados");
+      toast({ title: "¡Perfil actualizado!", description: "Cambios simulados guardados correctamente." });
+      onSave();
+      return;
+    }
+
     setIsLoading(true);
 
-
-      // Guardar cambios en Supabase
     const { error } = await supabase
       .from("profile")
       .upsert({ id: userId, full_name: formData.name, avatar_url: formData.profileImage });
@@ -138,13 +111,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     setIsLoading(false);
   };
 
-  const getInitials = (name: string) => name.split(" ").map(n => n[0]).join("").toUpperCase();
-
-
-
-  
- 
-
   return (
     <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent className="sm:max-w-md">
@@ -153,9 +119,9 @@ const handleSubmit = async (e: React.FormEvent) => {
             Editar Perfil
           </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Profile Image */}
+          {/* Imagen de perfil */}
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">
               <Avatar className="w-20 h-20 border-4 border-primary/20">
@@ -179,7 +145,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             </p>
           </div>
 
-          {/* Form Fields */}
+          {/* Campos del formulario */}
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nombre completo</Label>
@@ -191,8 +157,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                 required
               />
             </div>
-            
-           
           </div>
 
           <DialogFooter className="gap-2">
