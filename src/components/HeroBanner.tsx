@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import heroBanner from "@/assets/hero-banner.jpg";
+import heroBanner from "@/assets/herstory-header.jpg";
 
 const categories = [
   { id: "voces-creadoras", label: "Voces Creadoras", categoryId: 1 },
