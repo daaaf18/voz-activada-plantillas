@@ -34,19 +34,26 @@ const HeroBanner = () => {
   const currentCat = categories[currentCategory];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative w-full h-[500px] flex items-center justify-center overflow-hidden">
+    
       {/* Background with cinematic gradient */}
+    
       <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f3a] via-[#2d1b69] to-[#8b5cf6] opacity-95" />
       
+
       {/* Animated background elements */}
+     
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse" />
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000" />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-500" />
       </div>
-
+    
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-20">
+        
         <div className="text-center space-y-8">
+        
+          {/*}
           <div className="space-y-6">
             <div className="inline-block px-4 py-2 bg-orange-500 text-white font-semibold rounded-full text-sm uppercase tracking-wide">
               Mujeres que Transforman
@@ -65,6 +72,7 @@ const HeroBanner = () => {
               y siguen inspirando a las nuevas generaciones.
             </p>
           </div>
+          */}
 
           {/* Category banners carousel */}
           <div className="relative max-w-5xl mx-auto">
@@ -85,6 +93,7 @@ const HeroBanner = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+                    
                       
                       {/* Content overlay */}
                       <div className="absolute inset-0 flex items-center justify-center text-center p-8">
@@ -133,7 +142,7 @@ const HeroBanner = () => {
               ))}
             </div>
           </div>
-        </div>
+        </div> 
       </div>
 
       {/* Scroll indicator */}
@@ -143,7 +152,10 @@ const HeroBanner = () => {
         </div>
       </div>
     </section>
+  
   );
+
+
 };
 
 export default HeroBanner;

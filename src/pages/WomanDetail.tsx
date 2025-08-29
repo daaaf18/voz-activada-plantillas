@@ -3,19 +3,34 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ExternalLink, Calendar, MapPin, Award, Book } from "lucide-react";
+import { supabaseMuseo } from "@/lib/supabaseMuseo";
 
 interface WomanData {
   id: number;
   imagen_url: string;
   nombre_completo: string;
-  siglo: string;
+  siglo: string  | null;
   año_nacimiento: number;
-  año_fallecimiento?: number;
+  año_fallecimiento: number;
   ocupacion: string;
   logros: string;
   biografia: string;
-  origen_id: number;
+  origen_id: number | null;
 }
+
+interface WomanQuery {
+  id: number;
+  nombre_completo: string;
+  biografia: string;
+  año_nacimiento: number;
+  año_fallecimiento: number | null;
+  imagen_url: string;
+  ocupacion: string;
+  logros: string;
+  origen: { id: number; nombre: string } | null;
+  siglo: { id: number; numero: string } | null;
+}
+
 
 interface Origin {
   id: number;
@@ -23,6 +38,12 @@ interface Origin {
 }
 
 interface Link {
+  id: number;
+  url: string;
+  descripcion: string;
+  mujer_id: number;
+}
+interface LinkQuery {
   id: number;
   url: string;
   descripcion: string;
@@ -37,67 +58,66 @@ const WomanDetail = () => {
   const [links, setLinks] = useState<Link[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadWomanData = async () => {
-      if (!id) return;
+useEffect(() => {
+  const loadWomanData = async () => {
+    if (!id) return;
 
-      try {
-        // TODO: Replace with actual Supabase queries
-        // const { data: womanData } = await supabase
-        //   .from('mujeres')
-        //   .select('*')
-        //   .eq('id', id)
-        //   .single();
+    try {
+      setLoading(true);
 
-        // const { data: originData } = await supabase
-        //   .from('origen')
-        //   .select('nombre')
-        //   .eq('id', womanData.origen_id)
-        //   .single();
+       const { data: womanData, error: womanError } = await supabaseMuseo
+        .from("mujeres")
+        .select(`
+          id,
+          nombre_completo,
+          biografia,
+          año_nacimiento,
+          año_fallecimiento,
+          imagen_url,
+          ocupacion,
+          logros,
+          origen:origen (id, nombre),
+          siglo:siglos (id, numero)
+        `)
+        .eq("id", id)
+        .single<WomanQuery>();
 
-        // const { data: linksData } = await supabase
-        //   .from('links')
-        //   .select('*')
-        //   .eq('mujer_id', id);
+      if (womanError) throw womanError;
 
-        // Mock data for development
-        const mockWoman: WomanData = {
-          id: parseInt(id),
-          imagen_url: `https://images.unsplash.com/photo-1500000000${id}?w=600&h=800&fit=crop&auto=format`,
-          nombre_completo: "Nombre Completo de la Mujer Inspiradora",
-          siglo: "XX",
-          año_nacimiento: 1920,
-          año_fallecimiento: 2000,
-          ocupacion: "Científica, Escritora, Activista",
-          logros: "Pionera en su campo, ganadora de múltiples premios internacionales, defensora de los derechos humanos",
-          biografia: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          origen_id: 1
-        };
+      const { data: linksData, error: linksError } = await supabaseMuseo
+        .from("links")
+        .select("id, url, descripcion")
+        .eq("mujer_id", id)
+        .order("id", { ascending: true })
+        .returns<LinkQuery[]>();
 
-        const mockOrigin: Origin = {
-          id: 1,
-          nombre: "País de Origen"
-        };
+      if (linksError) throw linksError;
 
-        const mockLinks: Link[] = [
-          { id: 1, url: "https://youtube.com/watch?v=example1", descripcion: "Documental biográfico", mujer_id: parseInt(id) },
-          { id: 2, url: "https://example.com/biography.pdf", descripcion: "Biografía completa (PDF)", mujer_id: parseInt(id) },
-          { id: 3, url: "https://example.com/timeline", descripcion: "Línea de tiempo interactiva", mujer_id: parseInt(id) },
-          { id: 4, url: "https://spotify.com/playlist/example", descripcion: "Playlist musical inspiracional", mujer_id: parseInt(id) },
-        ];
+       setWoman({
+        id: womanData.id,
+        imagen_url: womanData.imagen_url,
+        nombre_completo: womanData.nombre_completo,
+        siglo: womanData.siglo?.numero || "Desconocido",
+        año_nacimiento: womanData.año_nacimiento,
+        año_fallecimiento: womanData.año_fallecimiento,
+        ocupacion: womanData.ocupacion,
+        logros: womanData.logros,
+        biografia: womanData.biografia,
+        origen_id: womanData.origen?.id || null,
+      });
 
-        setWoman(mockWoman);
-        setOrigin(mockOrigin);
-        setLinks(mockLinks);
-      } catch (error) {
-        console.error('Error loading woman data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setOrigin(womanData.origen || null);
+      setLinks(linksData || []);
+    } catch (error) {
+      console.error("Error cargando datos de la mujer:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadWomanData();
-  }, [id]);
+  loadWomanData();
+}, [id]);
+
 
   if (loading) {
     return (
@@ -118,14 +138,19 @@ const WomanDetail = () => {
     );
   }
 
+  const logrosArray = woman.logros
+  ? woman.logros.split("\n").map((logro) => logro.trim())
+  : [];
+
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-6">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <Button
             variant="ghost"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/herstory')}
             className="text-primary-foreground hover:bg-white/20 mb-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -142,7 +167,7 @@ const WomanDetail = () => {
             <div className="grid md:grid-cols-2 gap-8">
               <div className="relative">
                 <img
-                  src={woman.imagen_url}
+                  src={woman.imagen_url || "/assets/default.png"}
                   alt={woman.nombre_completo}
                   className="w-full aspect-[3/4] object-cover rounded-2xl shadow-[var(--shadow-elegant)]"
                 />
@@ -185,13 +210,21 @@ const WomanDetail = () => {
                       <p className="text-muted-foreground">{woman.ocupacion}</p>
                     </div>
                   </div>
-
+                  
                   <div className="flex items-start">
                     <Award className="mr-3 h-5 w-5 text-primary mt-1" />
                     <div>
                       <h3 className="font-semibold mb-2">Logros Destacados</h3>
-                      <p className="text-muted-foreground">{woman.logros}</p>
-                    </div>
+                      {logrosArray.length > 0 ? (
+                        <ul className="list-disc list-inside space-y-2 text-gray-700">
+                          {logrosArray.map((logro, index) => (
+                            <li key={index}>{logro}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500">No hay logros registrados.</p>
+                      )}
+                     </div>
                   </div>
                 </div>
               </div>
@@ -239,7 +272,7 @@ const WomanDetail = () => {
 
                 <div className="mt-8 pt-6 border-t border-border">
                   <Button 
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate('/herstory')}
                     className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
                   >
                     Explorar más mujeres
