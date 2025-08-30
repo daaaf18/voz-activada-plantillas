@@ -1,6 +1,6 @@
   import HeroBanner from "@/components/HeroBanner";
 import CategorySection from "@/components/CategorySection";
-
+import Navbar from "@/components/Navbar";
 const HerStory = () => {
 
 
@@ -50,11 +50,35 @@ const HerStory = () => {
   ];
 
   return (
-    
-    <div className="min-h-screen">
-      {/* Hero Banner */}
-      <HeroBanner />
-      
+    <>
+
+  
+      <div className="min-h-screen">
+        {/* Hero Banner */}
+        <HeroBanner />
+
+<Navbar />
+
+{/* Bloque de introducción (antes de categorías) */}
+      <section className="py-16 px-6 text-center space-y-6 bg-gradient-to-b from-primary/5 to-transparent">
+        
+        <h1 className="text-5xl md:text-7xl font-bold leading-tight text-gray-900">
+          El poder del
+          <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            mundo se decide
+          </span>
+          <span className="block text-gray-900">aquí</span>
+        </h1>
+        
+        <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          Descubre las historias de mujeres extraordinarias que han cambiado el curso de la historia 
+          y siguen inspirando a las nuevas generaciones.
+        </p>
+      </section>
+
+
+
+
       {/* Category Sections */}
       {categories.map((category) => (
         <CategorySection
@@ -78,6 +102,7 @@ const HerStory = () => {
         </div>
       </footer>
     </div>
+    </>
   );
 };
 
