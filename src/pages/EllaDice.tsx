@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,16 +12,12 @@ import headerImage from "@/assets/herstory-header.jpg";
 
 const EllaDice = () => {
   const { toast } = useToast();
-  const [newPost, setNewPost] = useState("");
-  const [newPostTitle, setNewPostTitle] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
-  const forumPosts = [
+  const [posts, setPosts] = useState([
     {
       id: 1,
       title: "Mi experiencia en el ámbito laboral",
       content: "Quiero compartir mi historia sobre cómo superé la discriminación en mi trabajo...",
-      author: "Ana M.",
       replies: 12,
       likes: 28,
       category: "Trabajo",
@@ -31,7 +27,6 @@ const EllaDice = () => {
       id: 2,
       title: "Recursos para mujeres emprendedoras",
       content: "He recopilado una lista de organizaciones que apoyan a mujeres empresarias...",
-      author: "Carmen L.",
       replies: 8,
       likes: 35,
       category: "Emprendimiento",
@@ -41,25 +36,61 @@ const EllaDice = () => {
       id: 3,
       title: "Apoyo emocional tras una ruptura difícil",
       content: "Busco consejos y apoyo de la comunidad. Pasé por una situación muy complicada...",
-      author: "María S.",
       replies: 24,
       likes: 45,
       category: "Bienestar",
       timeAgo: "1 día"
     }
-  ];
+  ]);
+
+  const [newPost, setNewPost] = useState("");
+  const [newPostTitle, setNewPostTitle] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("Todos");
 
   const categories = ["Todos", "Trabajo", "Emprendimiento", "Bienestar", "Familia", "Educación"];
 
+  // Crear nuevo post
   const handleNewPost = (e: React.FormEvent) => {
     e.preventDefault();
+    const newPostObj = {
+      id: posts.length + 1,
+      title: newPostTitle,
+      content: newPost,
+      replies: 0,
+      likes: 0,
+      category: activeCategory === "Todos" ? "General" : activeCategory,
+      timeAgo: "Justo ahora"
+    };
+    setPosts([newPostObj, ...posts]);
     toast({
       title: "¡Post publicado!",
-      description: "Tu mensaje ha sido compartido con la comunidad.",
+      description: "Tu mensaje ha sido compartido de forma anónima.",
     });
     setNewPost("");
     setNewPostTitle("");
   };
+
+  // Like a un post
+  const handleLike = (id: number) => {
+    setPosts(posts.map(post =>
+      post.id === id ? { ...post, likes: post.likes + 1 } : post
+    ));
+  };
+
+  // Responder (solo aumenta el contador)
+  const handleReply = (id: number) => {
+    setPosts(posts.map(post =>
+      post.id === id ? { ...post, replies: post.replies + 1 } : post
+    ));
+  };
+
+  // Filtrar por categoría y búsqueda
+  const filteredPosts = posts.filter(post =>
+    (activeCategory === "Todos" || post.category === activeCategory) &&
+    (post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -73,7 +104,7 @@ const EllaDice = () => {
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <div className="text-center text-white">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">Ella Dice</h1>
-            <p className="text-lg italic">Foro de nuestra comunidad</p>
+            <p className="text-lg italic">Foro anónimo de nuestra comunidad</p>
           </div>
         </div>
       </div>
@@ -81,7 +112,7 @@ const EllaDice = () => {
       <Navbar />
 
       <div className="container py-8">
-        {/* Community Stats */}
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardContent className="flex items-center space-x-4 p-6">
@@ -100,7 +131,7 @@ const EllaDice = () => {
                 <MessageCircle className="h-6 w-6 text-secondary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">3,894</p>
+                <p className="text-2xl font-bold">{posts.length}</p>
                 <p className="text-sm text-muted-foreground">Conversaciones</p>
               </div>
             </CardContent>
@@ -111,7 +142,9 @@ const EllaDice = () => {
                 <Heart className="h-6 w-6 text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold">12,567</p>
+                <p className="text-2xl font-bold">
+                  {posts.reduce((sum, p) => sum + p.likes, 0)}
+                </p>
                 <p className="text-sm text-muted-foreground">Apoyos compartidos</p>
               </div>
             </CardContent>
@@ -121,12 +154,12 @@ const EllaDice = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            {/* New Post */}
+            {/* Nuevo Post */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Plus className="h-5 w-5" />
-                  Nuevo Post
+                  Nuevo Post (Anónimo)
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -145,13 +178,13 @@ const EllaDice = () => {
                     className="min-h-24"
                   />
                   <Button type="submit" className="w-full">
-                    Publicar
+                    Publicar anónimamente
                   </Button>
                 </form>
               </CardContent>
             </Card>
 
-            {/* Categories */}
+            {/* Categorías */}
             <Card>
               <CardHeader>
                 <CardTitle>Categorías</CardTitle>
@@ -161,9 +194,10 @@ const EllaDice = () => {
                   {categories.map((category) => (
                     <Button
                       key={category}
-                      variant="ghost"
+                      variant={activeCategory === category ? "default" : "ghost"}
                       className="w-full justify-start"
                       size="sm"
+                      onClick={() => setActiveCategory(category)}
                     >
                       {category}
                     </Button>
@@ -173,9 +207,9 @@ const EllaDice = () => {
             </Card>
           </div>
 
-          {/* Main Content */}
+          {/* Main */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Search */}
+            {/* Buscar */}
             <Card>
               <CardContent className="p-4">
                 <div className="relative">
@@ -190,42 +224,56 @@ const EllaDice = () => {
               </CardContent>
             </Card>
 
-            {/* Forum Posts */}
+            {/* Posts */}
             <div className="space-y-4">
-              {forumPosts.map((post) => (
-                <Card key={post.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-3">
-                        <Avatar>
-                          <AvatarFallback className="bg-primary/10 text-primary">
-                            {post.author.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-semibold">{post.author}</p>
-                          <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
+              {filteredPosts.length > 0 ? (
+                filteredPosts.map((post) => (
+                  <Card key={post.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center space-x-3">
+                          <Avatar>
+                            <AvatarFallback className="bg-primary/10 text-primary">
+                              A
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-semibold">Anónimo</p>
+                            <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
+                          </div>
                         </div>
+                        <Badge variant="secondary">{post.category}</Badge>
                       </div>
-                      <Badge variant="secondary">{post.category}</Badge>
-                    </div>
-                    <CardTitle className="text-lg">{post.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">{post.content}</p>
-                    <div className="flex items-center space-x-4">
-                      <Button variant="ghost" size="sm" className="text-muted-foreground">
-                        <Heart className="h-4 w-4 mr-1" />
-                        {post.likes}
-                      </Button>
-                      <Button variant="ghost" size="sm" className="text-muted-foreground">
-                        <Reply className="h-4 w-4 mr-1" />
-                        {post.replies} respuestas
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      <CardTitle className="text-lg">{post.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground mb-4">{post.content}</p>
+                      <div className="flex items-center space-x-4">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-muted-foreground"
+                          onClick={() => handleLike(post.id)}
+                        >
+                          <Heart className="h-4 w-4 mr-1" />
+                          {post.likes}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-muted-foreground"
+                          onClick={() => handleReply(post.id)}
+                        >
+                          <Reply className="h-4 w-4 mr-1" />
+                          {post.replies} respuestas
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-center text-muted-foreground">No se encontraron posts.</p>
+              )}
             </div>
           </div>
         </div>

@@ -12,6 +12,9 @@ import Contacto from "./pages/Contacto";
 import Nosotras from "./pages/Nosotras";
 import NotFound from "./pages/NotFound";
 import Perfil from "./pages/perfil";
+import Aprende from "@/pages/Aprende";
+import AwarenessGuide from "@/pages/AwarenessGuide";
+import Reportar from "./pages/Reportar";
 //import Chatbot from "./components/ui/chatbot";
 import ChatbotSimulado from "./components/ui/chatbot_simulado";
 import WomanDetail from "./pages/WomanDetail";
@@ -27,21 +30,25 @@ const App = () => (
         <Sonner />
         <ChatbotSimulado /> {/* Burbuja flotante */}
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/perfil" element={<Perfil />}/>
-            <Route path="/mujeres-desaparecidas" element={<MujeresDesaparecidas />} />
-            <Route path="/ella-dice" element={<EllaDice />} />
-            <Route path="/contacto" element={<Contacto />} />
-            <Route path="/nosotras" element={<Nosotras />} />
-            <Route path="/mujer/:id" element={<WomanDetail />} />
-            <Route path="/herstory" element={<HerStory />} />
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/perfil" element={<Perfil />}/>
+    <Route path="/mujeres-desaparecidas" element={<MujeresDesaparecidas />} />
+    <Route path="/ella-dice" element={<EllaDice />} />
+    <Route path="/contacto" element={<Contacto />} />
+    <Route path="/nosotras" element={<Nosotras />} />
+    <Route path="/mujer/:id" element={<WomanDetail />} />
+    <Route path="/herstory" element={<HerStory />} />
+    <Route path="/awareness-guide" element={<AwarenessGuide />} />
+    <Route path="/aprende" element={<Aprende />} />
+    <Route path="/reportar" element={<Reportar />} />
 
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+    {/* Catch-all */}
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+</BrowserRouter>
+
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
@@ -11,41 +11,46 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, User, Heart, Mic, Search, BookOpen, Users, MessageCircle, Gamepad2, Phone } from "lucide-react";
+import {
+  Menu,
+  User,
+  Heart,
+  Mic,
+  Search,
+  BookOpen,
+  Users,
+  MessageCircle,
+  Gamepad2,
+  Phone,
+  LogOut,
+  Plus,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Menu, User, Heart, Mic, Search, BookOpen, Users, MessageCircle, Gamepad2, Phone, LogOut} from "lucide-react";
-import { cn } from "@/lib/utils";
-import {useAuth} from "@/hooks/useAuth"; 
-import {supabase} from "@/lib/supabaseClient"; 
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabaseClient";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-
+import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-
-  const {user, loading} =useAuth(); 
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
 
+  const handleAddClick = () => {
+    navigate("/reportar"); // Redirige al formulario
+  };
+
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
-    { 
-      label: "Inicio", 
-      href: "/", 
-      icon: Heart,
-      description: "Página principal"
-    },
-    { 
-      label: "Voces Silenciadas", 
-      href: "/voces-silenciadas", 
-      icon: Mic,
-      description: "Historias y testimonios"
-      description: "Podcasts y contenido multimedia"
-    },
+    { label: "Inicio", href: "/", icon: Heart, description: "Página principal" },
+    { label: "Voces Silenciadas", href: "/voces-silenciadas", icon: Mic, description: "Historias, testimonios y podcasts" },
     {
       label: "Nos Faltan Ellas",
       href: "/nos-faltan-ellas",
@@ -55,40 +60,14 @@ const Navbar = () => {
       dropdownItems: [
         { label: "Ayuda", href: "/ayuda", description: "Centro de ayuda y recursos" },
         { label: "Mujeres Desaparecidas", href: "/mujeres-desaparecidas", description: "Base de datos y casos" },
-        { label: "Rastro Nacional", href: "/rastro-nacional", description: "Red nacional de búsqueda" }
-      ]
+        { label: "Guía de Concientización", href: "/awareness-guide", description: "Concientización y apoyo" },
+      ],
     },
-    { 
-      label: "HerStory", 
-      href: "/herstory", 
-      icon: BookOpen,
-      description: "Podcasts y contenido multimedia"
-      description: "Mural de mujeres"
-    },
-    { 
-      label: "Ella Dice", 
-      href: "/ella-dice", 
-      icon: MessageCircle,
-      description: "Foro de la comunidad"
-    },
-    { 
-      label: "Aprende", 
-      href: "/aprende", 
-      icon: Gamepad2,
-      description: "Juegos educativos"
-    },
-    { 
-      label: "Nosotras", 
-      href: "/nosotras", 
-      icon: Users,
-      description: "Acerca de nosotras"
-    },
-    { 
-      label: "Contacto", 
-      href: "/contacto", 
-      icon: Phone,
-      description: "Formulario de contacto"
-    }
+    { label: "HerStory", href: "/herstory", icon: BookOpen, description: "Podcasts, contenido multimedia y mural de mujeres" },
+    { label: "Ella Dice", href: "/ella-dice", icon: MessageCircle, description: "Foro de la comunidad" },
+    { label: "Aprende", href: "/aprende", icon: Gamepad2, description: "Juegos educativos" },
+    { label: "Nosotras", href: "/nosotras", icon: Users, description: "Acerca de nosotras" },
+    { label: "Contacto", href: "/contacto", icon: Phone, description: "Formulario de contacto" },
   ];
 
   const DropdownContent = ({ items }: { items: any[] }) => (
@@ -99,7 +78,7 @@ const Navbar = () => {
             <Link
               to={item.href}
               className={cn(
-                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground",
                 isActive(item.href) && "bg-accent text-accent-foreground"
               )}
             >
@@ -125,17 +104,6 @@ const Navbar = () => {
             </div>
             <span className="hidden font-bold sm:inline-block bg-gradient-hero bg-clip-text text-transparent">
               Voz Activada
-       <div className="container flex h-16 items-center">
-         {/* Logo */}
-         <div className="mr-6 flex items-center space-x-2"> 
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg">
-              <a href="/img/logo/logo_story.png">
-                <img src="/img/logo/logo_story.png" alt="HerStory Logo" className="h-8 w-8" />
-              </a>
-            </div>
-            <span className="hidden font-bold sm:inline-block bg-gradient-hero bg-clip-text text-transparent">
-              HerStory
             </span>
           </Link>
         </div>
@@ -147,7 +115,7 @@ const Navbar = () => {
               <NavigationMenuItem key={item.label}>
                 {item.hasDropdown ? (
                   <>
-                    <NavigationMenuTrigger 
+                    <NavigationMenuTrigger
                       className={cn(
                         "bg-background hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                         isActive(item.href) && "bg-accent text-accent-foreground"
@@ -179,47 +147,56 @@ const Navbar = () => {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Right Side - Login Button */}
+        {/* Botón “Reportar Desaparición” solo en la página de mujeres desaparecidas */}
+        {location.pathname === "/mujeres-desaparecidas" && (
+          <Button
+            onClick={handleAddClick}
+            variant="secondary"
+            className="ml-4 bg-card text-card-foreground hover:bg-accent"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Reportar Desaparición
+          </Button>
+        )}
+
+        {/* Right Side - Login/Profile */}
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
 
-           {/* Botón de sesión */}
-        {!loading && (
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
-              
-                <Link to="/perfil">
+          {!loading && (
+            <div className="flex items-center gap-4">
+              {user ? (
+                <>
+                  <Link to="/perfil">
+                    <Button variant="hero" size="sm" className="hidden md:inline-flex">
+                      <User className="mr-2 h-4 w-4" />
+                      Mi Perfil
+                    </Button>
+                  </Link>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleLogout}
+                        className="hidden md:inline-flex"
+                      >
+                        <LogOut className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Cerrar Sesión</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </>
+              ) : (
+                <Link to="/login">
                   <Button variant="hero" size="sm" className="hidden md:inline-flex">
                     <User className="mr-2 h-4 w-4" />
-                    Mi Perfil
+                    Iniciar Sesión
                   </Button>
                 </Link>
-               <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleLogout}
-                    className="hidden md:inline-flex"
-                  >
-                    <LogOut className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Cerrar Sesión</p>
-                </TooltipContent>
-              </Tooltip>
-            
-              </>
-            ) : (
-          <Link to="/login">
-            <Button variant="hero" size="sm" className="hidden md:inline-flex">
-              <User className="mr-2 h-4 w-4" />
-              Iniciar Sesión
-            </Button>
-          </Link>
-            )}
+              )}
             </div>
           )}
 
@@ -241,7 +218,7 @@ const Navbar = () => {
                     Voz Activada
                   </span>
                 </div>
-                
+
                 {navItems.map((item) => (
                   <div key={item.label}>
                     <Link
@@ -255,7 +232,7 @@ const Navbar = () => {
                       <item.icon className="h-4 w-4" />
                       <span>{item.label}</span>
                     </Link>
-                    
+
                     {item.hasDropdown && (
                       <div className="ml-6 mt-2 space-y-1">
                         {item.dropdownItems?.map((subItem) => (
@@ -275,10 +252,25 @@ const Navbar = () => {
                     )}
                   </div>
                 ))}
-                
+
+                {/* Botón para móviles */}
+                {location.pathname === "/mujeres-desaparecidas" && (
+                  <Button
+                    onClick={() => {
+                      handleAddClick();
+                      setIsOpen(false);
+                    }}
+                    variant="secondary"
+                    className="w-full mt-2"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Reportar Desaparición
+                  </Button>
+                )}
+
                 <div className="pt-4">
-                  {!loading && (
-                    user ? (
+                  {!loading &&
+                    (user ? (
                       <div className="flex flex-col space-y-3">
                         <Link to="/perfil" onClick={() => setIsOpen(false)}>
                           <Button variant="hero" className="w-full">
@@ -298,14 +290,13 @@ const Navbar = () => {
                         </Button>
                       </div>
                     ) : (
-                  <Link to="/login" onClick={() => setIsOpen(false)}>
-                    <Button variant="hero" className="w-full">
-                      <User className="mr-2 h-4 w-4" />
-                      Iniciar Sesión
-                    </Button>
-                  </Link>
-                    )
-                  )}
+                      <Link to="/login" onClick={() => setIsOpen(false)}>
+                        <Button variant="hero" className="w-full">
+                          <User className="mr-2 h-4 w-4" />
+                          Iniciar Sesión
+                        </Button>
+                      </Link>
+                    ))}
                 </div>
               </nav>
             </SheetContent>
@@ -317,3 +308,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
