@@ -9,36 +9,32 @@ import headerImage from "@/assets/herstory-header.jpg";
 const Nosotras = () => {
   const teamMembers = [
     {
-      name: "Ana García",
-      role: "Fundadora & CEO",
-      description: "Abogada especializada en derechos humanos con 10+ años de experiencia. Apasionada por la justicia social y el empoderamiento femenino.",
-      initials: "AG",
-      email: "ana@herstory.com",
-      linkedin: "ana-garcia-herstory"
+      name: "Daniela Guadalupe Lira Huerta",
+      role: "Desarrolladora Backend",
+      description: "Estudiante de la FCC, le gustan los gatos, Taylor Swift y el diseño. Creadora de la identidad visual del proyecto.",
+      initials: "DL",
+      instagram: "ana@herstory.com",
     },
     {
-      name: "Carmen López",
-      role: "Directora de Contenido",
-      description: "Periodista y escritora enfocada en historias de mujeres. Ha trabajado en medios internacionales cubriendo temas de género y derechos.",
-      initials: "CL",
-      email: "carmen@herstory.com",
-      linkedin: "carmen-lopez-content"
+      name: "Jasmin Ixcheel Huerta Ramos",
+      role: "Desarrolladora Backend",
+      description: "Estudiante de la FCC, le gusta Stray Kids, la coca cola y la programación. Encargada de la implementación del backend del proyecto.",
+      initials: "IH",
+      instagram: "carmen@herstory.com",
     },
     {
-      name: "María Rodríguez",
-      role: "Coordinadora de Comunidad",
-      description: "Psicóloga clínica especializada en trauma y apoyo a víctimas. Líder en programas de rehabilitación y empoderamiento comunitario.",
-      initials: "MR",
-      email: "maria@herstory.com",
-      linkedin: "maria-rodriguez-community"
+      name: "Dafne Cirne Hernández",
+      role: "Diseñadora Frontend",
+      description: "Estudiante de la FCC, le gusta el gym, el anime y el desarrollo web. Encargada de la implementación del frontend del proyecto.",
+      initials: "DF",
+      instagram: "maria@herstory.com",
     },
     {
-      name: "Sofia Torres",
-      role: "Directora de Tecnología",
-      description: "Ingeniera en sistemas con experiencia en plataformas sociales. Enfocada en crear tecnología accesible y segura para mujeres.",
-      initials: "ST",
-      email: "sofia@herstory.com",
-      linkedin: "sofia-torres-tech"
+      name: "Jessica Nahomi Corona Hernández",
+      role: "Diseñadora Frontend",
+      description: "Estudiante de la FCC, le gusta Latin Mafia, Kenia OS y el desarrollo web. Encargada de la implementación del frontend del proyecto.",
+      initials: "JC",
+      instagram: "sofia@herstory.com",
     }
   ];
 
@@ -74,16 +70,22 @@ const Nosotras = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-lg leading-relaxed text-muted-foreground">
-                Crear un espacio digital seguro y empoderador donde las voces femeninas sean escuchadas, 
-                valoradas y amplificadas. Trabajamos para visibilizar las historias que han sido silenciadas 
-                y construir una comunidad de apoyo mutuo que inspire el cambio social.
-              </p>
-              <div className="flex items-center mt-6 space-x-2">
-                <Heart className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium">Empoderamiento a través de la narrativa</span>
-              </div>
-            </CardContent>
+  <p className="text-lg leading-relaxed text-muted-foreground">
+    El Museo de Mujeres Olvidadas tiene como misión visibilizar, preservar y honrar la memoria de las mujeres que han sido históricamente silenciadas, invisibilizadas o desaparecidas a causa de la violencia de género y la desigualdad.
+    A través de una plataforma web interactiva, buscamos crear un espacio de denuncia, reflexión y aprendizaje, donde cada usuario pueda:
+  </p>
+  <ul className="about-description list-disc list-inside text-lg leading-relaxed text-muted-foreground">
+    <li>Publicar y consultar casos de mujeres desaparecidas en un foro comunitario.</li>
+    <li>Navegar un mapa interactivo que muestra, estado por estado, las historias de quienes ya no están.</li>
+    <li>Explorar un blog dedicado a mujeres que realizaron aportes significativos en la historia, pero que fueron ignoradas.</li>
+    <li>Acceder a juegos y cuestionarios que fomentan el conocimiento sobre género, derechos humanos, historia y feminismos.</li>
+  </ul>
+  <div className="flex items-center mt-6 space-x-2">
+    <Heart className="h-5 w-5 text-primary" />
+    <span className="text-sm font-medium">Empoderamiento a través de la narrativa</span>
+  </div>
+</CardContent>
+
           </Card>
 
           <Card className="border-secondary/20">
@@ -154,7 +156,7 @@ const Nosotras = () => {
 
         {/* Team */}
         <div>
-          <h2 className="text-3xl font-bold text-center mb-8">Nuestro Equipo</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">Voy a hacer un cartel de puras viejas chingonas...</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {teamMembers.map((member, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
@@ -182,34 +184,14 @@ const Nosotras = () => {
                       <Mail className="h-4 w-4 mr-2" />
                       Contactar
                     </Button>
-                    <Button variant="outline" size="sm">
-                      <Linkedin className="h-4 w-4 mr-2" />
-                      LinkedIn
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
-
-        {/* Join Us Section */}
-        <div className="mt-16 text-center">
-          <Card className="bg-gradient-subtle border-primary/20">
-            <CardContent className="py-12">
-              <h2 className="text-2xl font-bold mb-4">¿Quieres unirte a nuestro equipo?</h2>
-              <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-                Siempre estamos buscando personas apasionadas que compartan nuestra visión 
-                de un mundo más equitativo e inclusivo.
-              </p>
-              <Button size="lg" variant="default">
-                Ver oportunidades
-              </Button>
-            </CardContent>
-          </Card>
         </div>
-      </div>
-    </div>
+        </div>
   );
 };
 
